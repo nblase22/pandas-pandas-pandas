@@ -18,7 +18,7 @@ p_data_df = pd.read_json(json_path)
 p_data_df.head()
 ```
 
-    Please input the name of the datafile: purchase_data.json
+    Please input the name of the datafile: purchase_data2.json
     
 
 
@@ -609,12 +609,15 @@ item_purch_count = p_data_df["Item Name"].value_counts()
 item_id = item_group["Item ID"].mean()
 item_price = round(item_group["Price"].mean(), 2).map("${:.2f}".format)
 item_tot = item_group["Price"].sum().map("${:.2f}".format)
+item_tot_check = item_group["Price"].sum()
 
 # create the data frame
 item_df = pd.DataFrame({"Item ID": item_id, "Purchase Count": item_purch_count, "Item Price": item_price, "Total Purchase Value": item_tot})
 
+item_df['Purchase Count'].astype(float)
+
 #sort by purchase count
-pop_items = item_df.sort_values(['Purchase Count'], ascending = False)
+pop_items = item_df.nlargest(5, 'Purchase Count')
 pop_items.head()
 ```
 
@@ -654,32 +657,32 @@ pop_items.head()
       <td>$10.92</td>
     </tr>
     <tr>
-      <th>Deadline, Voice Of Subtlety</th>
-      <td>98</td>
-      <td>$1.29</td>
-      <td>2</td>
-      <td>$2.58</td>
-    </tr>
-    <tr>
-      <th>Stormcaller</th>
-      <td>180</td>
-      <td>$2.77</td>
-      <td>2</td>
-      <td>$5.54</td>
-    </tr>
-    <tr>
-      <th>Relentless Iron Skewer</th>
-      <td>176</td>
-      <td>$2.12</td>
-      <td>2</td>
-      <td>$4.24</td>
-    </tr>
-    <tr>
       <th>Apocalyptic Battlescythe</th>
       <td>93</td>
       <td>$4.49</td>
       <td>2</td>
       <td>$8.98</td>
+    </tr>
+    <tr>
+      <th>Betrayer</th>
+      <td>90</td>
+      <td>$4.12</td>
+      <td>2</td>
+      <td>$8.24</td>
+    </tr>
+    <tr>
+      <th>Crucifer</th>
+      <td>12</td>
+      <td>$2.64</td>
+      <td>2</td>
+      <td>$5.29</td>
+    </tr>
+    <tr>
+      <th>Deadline, Voice Of Subtlety</th>
+      <td>98</td>
+      <td>$1.29</td>
+      <td>2</td>
+      <td>$2.58</td>
     </tr>
   </tbody>
 </table>
@@ -691,10 +694,11 @@ pop_items.head()
 ```python
 # Most Profitable Items
 # id the 5 most profitable items by total purchase value, List: Item Id, Item Name, Purchase Count, Item Price, TPV
-
-
+item_df_check = pd.DataFrame({"Item ID": item_id, "Purchase Count": item_purch_count, "Item Price": item_price, "Total Purchase Value": item_tot_check})
+item_df_check
 # sort by total purchase value
-prof_items = item_df.sort_values(['Total Purchase Value'], ascending = False)
+prof_items = item_df_check.nlargest(5, 'Total Purchase Value')
+prof_items['Total Purchase Value'] = prof_items['Total Purchase Value'].map("${:.2f}".format)
 prof_items.head()
 ```
 
@@ -727,6 +731,13 @@ prof_items.head()
   </thead>
   <tbody>
     <tr>
+      <th>Mourning Blade</th>
+      <td>94</td>
+      <td>$3.64</td>
+      <td>3</td>
+      <td>$10.92</td>
+    </tr>
+    <tr>
       <th>Heartstriker, Legacy of the Light</th>
       <td>117</td>
       <td>$4.71</td>
@@ -753,13 +764,6 @@ prof_items.head()
       <td>$4.11</td>
       <td>2</td>
       <td>$8.22</td>
-    </tr>
-    <tr>
-      <th>Stormcaller</th>
-      <td>180</td>
-      <td>$2.77</td>
-      <td>2</td>
-      <td>$5.54</td>
     </tr>
   </tbody>
 </table>
